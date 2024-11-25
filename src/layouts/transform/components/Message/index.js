@@ -19,11 +19,22 @@ export default function Message(
   errorCode,
   error,
   outputType,
-  statusCode
+  statusCode,
+  validatorType,
+  inputSrcMessage
 ) {
   const [open, setOpen] = React.useState(false);
 
+  const [openSrcMsg, setOpenSrcMsg] = React.useState(false);
   const [openErrorDialog, setOpenErrorDialog] = React.useState(false);
+
+  const handleClickOpenSrcMsg = () => {
+    setOpenSrcMsg(true);
+  };
+
+  const handleCloseSrcMsg = () => {
+    setOpenSrcMsg(false);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -43,12 +54,13 @@ export default function Message(
 
   return {
     columns: [
-      { Header: "message_id", accessor: "message_id", align: "left", width: "25%" },
+      { Header: "message_id", accessor: "message_id", align: "left", width: "20%" },
+      { Header: "input_message", accessor: "input_message", align: "center", width: "10%" },
       { Header: "mx", accessor: "mx", align: "left", width: "15%" },
-      { Header: "status", accessor: "status", align: "center", width: "20%" },
+      { Header: "status", accessor: "status", align: "center", width: "15%" },
       {
-        Header: "message",
-        accessor: "message",
+        Header: "output_message",
+        accessor: "output_message",
         align: "center",
         width: "20%"
       },
@@ -58,7 +70,38 @@ export default function Message(
     rows: [
       {
         message_id: messageId,
-        mx: outputType,
+        input_message: (
+          <>
+              <MDButton
+                variant="text"
+                color="success"
+                onClick={handleClickOpenSrcMsg}
+              >
+                Show message
+              </MDButton>
+              <Dialog
+                open={openSrcMsg}
+                onClose={handleCloseSrcMsg}
+                aria-labelledby="alert-dialog-msg-src"
+                aria-describedby="alert-dialog-description-msg-src"
+              >
+                <DialogTitle id="alert-dialog-msg-src">
+                  Input Message
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-description-msg-src">
+                    {atob(inputSrcMessage)}                   
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleCloseSrcMsg} autoFocus>
+                    Close
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </>
+        ),
+        mx: validatorType,
         status: (
           <MDBox ml={-1}>
             <MDBadge
@@ -69,8 +112,8 @@ export default function Message(
             />
           </MDBox>
         ),
-        message:
-          statusCode == "200" ? (
+        output_message:
+          (
             <>
               <MDButton
                 variant="text"
@@ -100,8 +143,6 @@ export default function Message(
                 </DialogActions>
               </Dialog>
             </>
-          ) : (
-            "NA"
           ),
         errors:
           statusCode != "200" ? (

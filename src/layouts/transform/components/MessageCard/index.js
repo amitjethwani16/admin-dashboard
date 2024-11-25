@@ -37,6 +37,8 @@ function MessageCard({
   const [transformErrorCode, setTransformErrorCode] = useState(null);
   const [outputType, setTransformOutputType] = useState("");
   const [statusCode, setStatusCode] = useState(null);
+  const [transformValidatorType, setTransformValidatorType] = useState("");
+  const [inputSrcMessage, setInputSrcMessage] = useState("");
 
   const { columns, rows } = Message(
     transformedMessage,
@@ -44,28 +46,33 @@ function MessageCard({
     transformErrorCode,
     transformErrors,
     outputType,
-    statusCode
+    statusCode,
+    transformValidatorType,
+    inputSrcMessage
   );
 
   const trigger = (
     inputMessageId,
     srcInputType,
     srcOutputType,
-    message,
+    inputMessage,
     validatorType
   ) => {
+
+    setInputSrcMessage(inputMessage);
+
     getMessageTransformation(
       inputMessageId,
       srcInputType,
       srcOutputType,
       validatorType,
-      message
+      inputMessage
     ).then((response) => {
       setMessgeId(response.eventReferenceId);
       setTransformedMessage(response.transformedMessage);
       setTransformErrorCode(response.errorCode);
       setTransformErrors(response.error);
-
+      setTransformValidatorType(response.validatorType);
       setStatusCode(response.statusCode);
       setTransformOutputType(response.outputType);
     });
