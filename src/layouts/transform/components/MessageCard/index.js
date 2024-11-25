@@ -11,7 +11,7 @@ import MDButton from "components/MDButton";
 
 // Admin Dashboard context
 import { useMaterialUIController } from "context";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import DataTable from "base-components/Tables/DataTable";
 
@@ -25,6 +25,7 @@ function MessageCard({
   message,
   noGutter,
   validatorType,
+  isTransformAll,
 }) {
   const [controller] = useMaterialUIController();
 
@@ -58,7 +59,6 @@ function MessageCard({
     inputMessage,
     validatorType
   ) => {
-
     setInputSrcMessage(inputMessage);
 
     getMessageTransformation(
@@ -77,6 +77,18 @@ function MessageCard({
       setTransformOutputType(response.outputType);
     });
   };
+
+  useEffect(() => {
+    if (isTransformAll) {
+      trigger(
+        inputMessageId,
+        srcInputType,
+        srcOutputType,
+        message,
+        validatorType
+      );
+    }
+  }, [isTransformAll]);
 
   return (
     <MDBox

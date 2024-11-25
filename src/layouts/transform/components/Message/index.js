@@ -11,7 +11,7 @@ import MDButton from "components/MDButton";
 
 import React from "react";
 
-import XMLViewer from 'react-xml-viewer'
+import XMLViewer from "react-xml-viewer";
 
 export default function Message(
   transformedMessage,
@@ -54,15 +54,25 @@ export default function Message(
 
   return {
     columns: [
-      { Header: "message_id", accessor: "message_id", align: "left", width: "20%" },
-      { Header: "input_message", accessor: "input_message", align: "center", width: "10%" },
+      {
+        Header: "message_id",
+        accessor: "message_id",
+        align: "left",
+        width: "20%",
+      },
+      {
+        Header: "input_message",
+        accessor: "input_message",
+        align: "center",
+        width: "10%",
+      },
       { Header: "mx", accessor: "mx", align: "left", width: "15%" },
       { Header: "status", accessor: "status", align: "center", width: "15%" },
       {
         Header: "output_message",
         accessor: "output_message",
         align: "center",
-        width: "20%"
+        width: "20%",
       },
       { Header: "errors", accessor: "errors", align: "center", width: "20%" },
     ],
@@ -72,34 +82,32 @@ export default function Message(
         message_id: messageId,
         input_message: (
           <>
-              <MDButton
-                variant="text"
-                color="success"
-                onClick={handleClickOpenSrcMsg}
-              >
-                Show message
-              </MDButton>
-              <Dialog
-                open={openSrcMsg}
-                onClose={handleCloseSrcMsg}
-                aria-labelledby="alert-dialog-msg-src"
-                aria-describedby="alert-dialog-description-msg-src"
-              >
-                <DialogTitle id="alert-dialog-msg-src">
-                  Input Message
-                </DialogTitle>
-                <DialogContent>
-                  <DialogContentText id="alert-dialog-description-msg-src">
-                    {atob(inputSrcMessage)}                   
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleCloseSrcMsg} autoFocus>
-                    Close
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            </>
+            <MDButton
+              variant="text"
+              color="success"
+              onClick={handleClickOpenSrcMsg}
+            >
+              Show message
+            </MDButton>
+            <Dialog
+              open={openSrcMsg}
+              onClose={handleCloseSrcMsg}
+              aria-labelledby="alert-dialog-msg-src"
+              aria-describedby="alert-dialog-description-msg-src"
+            >
+              <DialogTitle id="alert-dialog-msg-src">Input Message</DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description-msg-src">
+                  {atob(inputSrcMessage)}
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleCloseSrcMsg} autoFocus>
+                  Close
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </>
         ),
         mx: validatorType,
         status: (
@@ -112,38 +120,33 @@ export default function Message(
             />
           </MDBox>
         ),
-        output_message:
-          (
-            <>
-              <MDButton
-                variant="text"
-                color="success"
-                onClick={handleClickOpen}
-              >
-                Show message
-              </MDButton>
-              <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-msg"
-                aria-describedby="alert-dialog-description-msg"
-              >
-                <DialogTitle id="alert-dialog-msg">
-                  Transformed Message
-                </DialogTitle>
-                <DialogContent>
-                  <DialogContentText id="alert-dialog-description-msg">
-                    <XMLViewer xml={transformedMessage}></XMLViewer>                   
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleClose} autoFocus>
-                    Close
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            </>
-          ),
+        output_message: (
+          <>
+            <MDButton variant="text" color="success" onClick={handleClickOpen}>
+              Show message
+            </MDButton>
+            <Dialog
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-msg"
+              aria-describedby="alert-dialog-description-msg"
+            >
+              <DialogTitle id="alert-dialog-msg">
+                Transformed Message
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description-msg">
+                  <XMLViewer xml={transformedMessage}></XMLViewer>
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose} autoFocus>
+                  Close
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </>
+        ),
         errors:
           statusCode != "200" ? (
             <>
