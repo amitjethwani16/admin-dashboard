@@ -8,7 +8,7 @@ import SwapHorizontalCircleOutlinedIcon from '@mui/icons-material/SwapHorizontal
 const routes = [
   {
     type: "collapse",
-    name: "Transforms",
+    name: "TransformX",
     key: "transform-dashboard",
     icon: <SwapHorizontalCircleOutlinedIcon />,
     route: "/transform-dashboard",

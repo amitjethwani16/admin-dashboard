@@ -1,21 +1,19 @@
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
-// @mui material components
-import Icon from "@mui/material/Icon";
-
 // Admin Dashboard components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDButton from "components/MDButton";
+import { IconButton } from "@mui/material";
 
 // Admin Dashboard context
 import { useMaterialUIController } from "context";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import DataTable from "base-components/Tables/DataTable";
 
 import TransformEngineService from "services/TransformEngineService";
+import PlayCircleFilledTwoToneIcon from "@mui/icons-material/PlayCircleFilledTwoTone";
 import Message from "../Message";
 
 function MessageCard({
@@ -125,8 +123,9 @@ function MessageCard({
             ml={{ xs: -1.5, sm: 0 }}
           >
             <MDBox mr={1}>
-              <MDButton
-                variant="text"
+              <IconButton
+                aria-label="delete"
+                size="large"
                 color="error"
                 onClick={() =>
                   trigger(
@@ -138,8 +137,8 @@ function MessageCard({
                   )
                 }
               >
-                <Icon>refresh</Icon>&nbsp;Transform
-              </MDButton>
+                <PlayCircleFilledTwoToneIcon fontSize="inherit" />
+              </IconButton>
             </MDBox>
           </MDBox>
         </MDBox>
@@ -152,16 +151,6 @@ function MessageCard({
               textTransform="capitalize"
             >
               {srcInputType}
-            </MDTypography>
-          </MDTypography>
-          <MDTypography variant="caption" color="text" pt={3} px={2}>
-            Output Type:&nbsp;&nbsp;&nbsp;
-            <MDTypography
-              variant="caption"
-              fontWeight="medium"
-              textTransform="capitalize"
-            >
-              {srcOutputType}
             </MDTypography>
           </MDTypography>
         </MDBox>
