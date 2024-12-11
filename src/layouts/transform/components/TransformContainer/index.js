@@ -55,7 +55,6 @@ function TransformContainer() {
         color="info"
         onClick={() => loadAllMessages()}
         style={{ width: isVisible ? "50%" : "20%", margin: "1rem auto" }}
-        disabled={!isVisible ? false : true}
       >
         {isVisible ? (
           <MDBox pt={3} px={2}>
