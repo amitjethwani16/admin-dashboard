@@ -17,6 +17,7 @@ import XMLViewer from "react-xml-viewer";
 
 import CustomizedSteppers from "base-components/Stepper";
 import Spinner from "../../../../base-components/Spinners";
+import MDBox from "components/MDBox";
 
 function MessageBox({ message, transformAll }) {
   const [open, setOpen] = React.useState(false);
@@ -109,8 +110,16 @@ function MessageBox({ message, transformAll }) {
   }, [transformAll]);
 
   return (
+    
     <tr key={message.eventReferenceId}>
       <td>
+      <MDBox
+              component="ul"
+              display="flex"
+              flexDirection="column"
+              p={0}
+              m={0}
+            >
         <IconButton
           aria-label="delete"
           size="large"
@@ -127,6 +136,7 @@ function MessageBox({ message, transformAll }) {
         >
           <PlayCircleFilledTwoToneIcon fontSize="inherit" />
         </IconButton>
+        </MDBox>
       </td>
       <td>{message.eventReferenceId}</td>
 
