@@ -20,3 +20,7 @@
     line-height: 1.42857143;
     vertical-align: top;
 }
+
+.table>thead>tr>th {
+    text-transform: uppercase;
+}
