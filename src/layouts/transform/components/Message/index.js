@@ -1,5 +1,4 @@
-import MDBox from "components/MDBox";
-import MDBadge from "components/MDBadge";
+
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -7,26 +6,49 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
+import { IconButton } from "@mui/material";
+
+import TransformEngineService from "services/TransformEngineService";
+import PlayCircleFilledTwoToneIcon from "@mui/icons-material/PlayCircleFilledTwoTone";
 import MDButton from "components/MDButton";
 
-import React from "react";
+import React, { useState } from "react";
 
 import XMLViewer from "react-xml-viewer";
 
+import CustomizedSteppers from "base-components/Stepper";
+import Spinner from "../../../../base-components/Spinners";
+
 export default function Message(
-  transformedMessage,
-  messageId,
+  transformedMessage1,
+  messageId1,
   errorCode,
   error,
-  outputType,
-  statusCode,
+  outputType1,
+  statusCode1,
   validatorType,
-  inputSrcMessage
+  inputSrcMessage1,
+  stepActiveCounter1,
+  messageList,
+  srcInputType,
+  srcOutputType,
+  inputMessageId
 ) {
   const [open, setOpen] = React.useState(false);
+  const { getMessageTransformation } = TransformEngineService();
 
   const [openSrcMsg, setOpenSrcMsg] = React.useState(false);
   const [openErrorDialog, setOpenErrorDialog] = React.useState(false);
+  const [transformedMessage, setTransformedMessage] = useState("");
+  const [transformErrors, setTransformErrors] = useState(null);
+  const [messageId, setMessgeId] = useState("");
+  const [transformErrorCode, setTransformErrorCode] = useState(null);
+  const [outputType, setTransformOutputType] = useState("");
+  const [statusCode, setStatusCode] = useState(null);
+  const [transformValidatorType, setTransformValidatorType] = useState("");
+  const [inputSrcMessage, setInputSrcMessage] = useState("");
+
+  const [stepActiveCounter, setActiveCounter] = useState(-1);
 
   const handleClickOpenSrcMsg = () => {
     setOpenSrcMsg(true);
@@ -52,34 +74,67 @@ export default function Message(
     setOpenErrorDialog(false);
   };
 
-  return {
-    columns: [
-      {
-        Header: "message_id",
-        accessor: "message_id",
-        align: "left",
-        width: "20%",
-      },
-      {
-        Header: "input_message",
-        accessor: "input_message",
-        align: "center",
-        width: "10%",
-      },
-      { Header: "mx", accessor: "mx", align: "left", width: "15%" },
-      { Header: "status", accessor: "status", align: "center", width: "15%" },
-      {
-        Header: "output_message",
-        accessor: "output_message",
-        align: "center",
-        width: "20%",
-      },
-      { Header: "errors", accessor: "errors", align: "center", width: "20%" },
-    ],
+  const trigger = (
+    inputMessageId,
+    srcInputType,
+    srcOutputType,
+    inputMessage,
+    validatorType
+  ) => {
+    setInputSrcMessage(inputMessage);
 
-    rows: [
-      {
-        message_id: messageId,
+    getMessageTransformation(
+      inputMessageId,
+      srcInputType,
+      srcOutputType,
+      validatorType,
+      inputMessage
+    ).then((response) => {
+      console.log("stattt" + response.statusCode);
+      setTimeout(() => {
+        setTimeout(() => {
+          setActiveCounter(0);
+
+          setTimeout(() => {
+            setActiveCounter(1);
+
+            setTimeout(() => {
+              setMessgeId(response.eventReferenceId);
+              setTransformedMessage(response.transformedMessage);
+              setTransformErrorCode(response.errorCode);
+              setTransformErrors(response.error);
+              setTransformValidatorType(response.validatorType);
+              setStatusCode(response.statusCode);
+              setTransformOutputType(response.outputType);
+              setActiveCounter(2);
+            }, 2000);
+          }, 2000);
+        }, 2000);
+      }, 2000);
+    });
+  };
+
+  const rowsMapper = messageList
+    ? messageList.map((message1) => ({
+        transform: (
+          <IconButton
+            aria-label="delete"
+            size="large"
+            color="error"
+            onClick={() =>
+              trigger(
+                message1.eventReferenceId,
+                message1.inputType,
+                message1.outputType,
+                message1.messageContent,
+                message1.validatorType
+              )
+            }
+          >
+            <PlayCircleFilledTwoToneIcon fontSize="inherit" />
+          </IconButton>
+        ),
+        message_id: message1.eventReferenceId,
         input_message: (
           <>
             <MDButton
@@ -98,7 +153,7 @@ export default function Message(
               <DialogTitle id="alert-dialog-msg-src">Input Message</DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description-msg-src">
-                  {atob(inputSrcMessage)}
+                  {atob(message1.messageContent)}
                 </DialogContentText>
               </DialogContent>
               <DialogActions>
@@ -109,46 +164,52 @@ export default function Message(
             </Dialog>
           </>
         ),
-        mx: validatorType,
+        mx: message1.validatorType,
         status: (
-          <MDBox ml={-1}>
-            <MDBadge
-              badgeContent={error ? "Failed" : "Success"}
-              color={error ? "error" : "success"}
-              variant="gradient"
-              size="sm"
-            />
-          </MDBox>
-        ),
-        output_message: (
           <>
-            <MDButton variant="text" color="success" onClick={handleClickOpen}>
-              Show message
-            </MDButton>
-            <Dialog
-              open={open}
-              onClose={handleClose}
-              aria-labelledby="alert-dialog-msg"
-              aria-describedby="alert-dialog-description-msg"
-            >
-              <DialogTitle id="alert-dialog-msg">
-                Transformed Message
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description-msg">
-                  <XMLViewer xml={transformedMessage}></XMLViewer>
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleClose} autoFocus>
-                  Close
-                </Button>
-              </DialogActions>
-            </Dialog>
+            <CustomizedSteppers
+              activeStepCounter={stepActiveCounter}
+              statusCode={statusCode}
+            ></CustomizedSteppers>
+            <Spinner visibility={true}></Spinner>
           </>
         ),
+        output_message:
+          statusCode != null && transformedMessage != null ? (
+            <>
+              <MDButton
+                variant="text"
+                color="success"
+                onClick={handleClickOpen}
+              >
+                Show message
+              </MDButton>
+              <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-msg"
+                aria-describedby="alert-dialog-description-msg"
+              >
+                <DialogTitle id="alert-dialog-msg">
+                  Transformed Message
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-description-msg">
+                    <XMLViewer xml={transformedMessage}></XMLViewer>
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleClose} autoFocus>
+                    Close
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </>
+          ) : (
+            "NA"
+          ),
         errors:
-          statusCode != "200" ? (
+          statusCode != "200" && statusCode != null ? (
             <>
               <MDButton
                 variant="text"
@@ -181,7 +242,40 @@ export default function Message(
           ) : (
             "NA"
           ),
+      }))
+    : [{}];
+
+  return {
+    columns: [
+      {
+        Header: "transform",
+        accessor: "transform",
+        align: "left",
+        width: "20%",
       },
+      {
+        Header: "message_id",
+        accessor: "message_id",
+        align: "left",
+        width: "20%",
+      },
+      {
+        Header: "input_message",
+        accessor: "input_message",
+        align: "center",
+        width: "10%",
+      },
+      { Header: "mx", accessor: "mx", align: "left", width: "15%" },
+      { Header: "status", accessor: "status", align: "center", width: "15%" },
+      {
+        Header: "output_message",
+        accessor: "output_message",
+        align: "center",
+        width: "20%",
+      },
+      { Header: "errors", accessor: "errors", align: "center", width: "20%" },
     ],
+
+    rows: rowsMapper,
   };
 }

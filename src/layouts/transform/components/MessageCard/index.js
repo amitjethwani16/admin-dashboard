@@ -16,6 +16,9 @@ import TransformEngineService from "services/TransformEngineService";
 import PlayCircleFilledTwoToneIcon from "@mui/icons-material/PlayCircleFilledTwoTone";
 import Message from "../Message";
 
+import CustomizedSteppers from "base-components/Stepper";
+import MessageBox from "../messageBox";
+
 function MessageCard({
   inputMessageId,
   srcInputType,
@@ -24,6 +27,7 @@ function MessageCard({
   noGutter,
   validatorType,
   isTransformAll,
+  messageList,
 }) {
   const [controller] = useMaterialUIController();
 
@@ -39,15 +43,22 @@ function MessageCard({
   const [transformValidatorType, setTransformValidatorType] = useState("");
   const [inputSrcMessage, setInputSrcMessage] = useState("");
 
+  const [stepActiveCounter, setActiveCounter] = useState(-1);
+
   const { columns, rows } = Message(
     transformedMessage,
-    messageId,
+    inputMessageId,
     transformErrorCode,
     transformErrors,
     outputType,
     statusCode,
     transformValidatorType,
-    inputSrcMessage
+    message,
+    stepActiveCounter,
+    messageList,
+    srcOutputType,
+    srcInputType,
+    inputMessageId
   );
 
   const trigger = (
@@ -66,13 +77,30 @@ function MessageCard({
       validatorType,
       inputMessage
     ).then((response) => {
-      setMessgeId(response.eventReferenceId);
-      setTransformedMessage(response.transformedMessage);
-      setTransformErrorCode(response.errorCode);
-      setTransformErrors(response.error);
-      setTransformValidatorType(response.validatorType);
-      setStatusCode(response.statusCode);
-      setTransformOutputType(response.outputType);
+      console.log("stattt" + response.statusCode);
+      setTimeout(() => {
+        setTimeout(() => {
+          setActiveCounter(0);
+
+          setTimeout(() => {
+            setActiveCounter(1);
+
+            setTimeout(() => {
+              setMessgeId(response.eventReferenceId);
+              setTransformedMessage(response.transformedMessage);
+              setTransformErrorCode(response.errorCode);
+              setTransformErrors(response.error);
+              setTransformValidatorType(response.validatorType);
+              setStatusCode(response.statusCode);
+              setTransformOutputType(response.outputType);
+              // if(statusCode == 200){
+              //   setActiveCounter(2);
+              // }
+              setActiveCounter(2);
+            }, 2000);
+          }, 2000);
+        }, 2000);
+      }, 2000);
     });
   };
 
@@ -101,6 +129,7 @@ function MessageCard({
       mt={2}
     >
       <MDBox width="100%" display="flex" flexDirection="column">
+        <MDBox></MDBox>
         <MDBox
           display="flex"
           justifyContent="space-between"
@@ -154,16 +183,17 @@ function MessageCard({
             </MDTypography>
           </MDTypography>
         </MDBox>
+        {/* <CustomizedSteppers activeStepCounter={stepActiveCounter}></CustomizedSteppers> */}
         <MDBox>
-          {statusCode && (
-            <DataTable
-              table={{ columns, rows }}
-              isSorted={false}
-              entriesPerPage={false}
-              showTotalEntries={false}
-              noEndBorder
-            />
-          )}
+          {/* {statusCode && ( */}
+          <DataTable
+            table={{ columns, rows }}
+            isSorted={false}
+            entriesPerPage={false}
+            showTotalEntries={false}
+            noEndBorder
+          />
+          {/* )} */}
         </MDBox>
       </MDBox>
     </MDBox>
