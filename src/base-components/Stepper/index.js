@@ -159,7 +159,7 @@ const ColorlibStepIconRoot = styled("div")(({ theme }) => ({
   ],
 }));
 
-const ColorlibStepIconRoot1 = styled("div")(({ theme }) => ({
+const ColorlibStepIconRootFailed = styled("div")(({ theme }) => ({
   background: "red",
   zIndex: 1,
   color: "#fff",
@@ -211,7 +211,7 @@ function ColorlibStepIcon(props) {
   );
 }
 
-function ColorlibStepIcon1(props) {
+function ColorlibStepIconFailed(props) {
   const { active, completed, className } = props;
 
   const icons = {
@@ -221,12 +221,12 @@ function ColorlibStepIcon1(props) {
   };
 
   return (
-    <ColorlibStepIconRoot1
+    <ColorlibStepIconRootFailed
       ownerState={{ completed, active }}
       className={className}
     >
       {icons[String(props.icon)]}
-    </ColorlibStepIconRoot1>
+    </ColorlibStepIconRootFailed>
   );
 }
 
@@ -248,7 +248,7 @@ ColorlibStepIcon.propTypes = {
   icon: PropTypes.node,
 };
 
-ColorlibStepIcon1.propTypes = {
+ColorlibStepIconFailed.propTypes = {
   /**
    * Whether this step is active.
    * @default false
@@ -292,7 +292,7 @@ const CustomizedSteppers = (props) => {
               <StepLabel
                 StepIconComponent={
                   statusCode != 200 && statusCode != null
-                    ? ColorlibStepIcon1
+                    ? ColorlibStepIconFailed
                     : ColorlibStepIcon
                 }
               >
